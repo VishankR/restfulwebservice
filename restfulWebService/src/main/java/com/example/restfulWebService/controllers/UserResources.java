@@ -1,10 +1,12 @@
 package com.example.restfulWebService.controllers;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -12,6 +14,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,10 +31,13 @@ public class UserResources {
 	@Autowired
 	UserDaoService service;
 
-	@RequestMapping(method = RequestMethod.GET, path = "/")
-	public List<User> retrieveAllUsersHome() {
-		return service.findAll();
-	}
+	@Autowired
+	private MessageSource messageSource;
+	
+	/*
+	 * @RequestMapping(method = RequestMethod.GET, path = "/") public List<User>
+	 * retrieveAllUsersHome() { return service.findAll(); }
+	 */
 
 	@RequestMapping(method = RequestMethod.GET, path = "/users")
 	public List<User> retrieveAllUsers() {
@@ -67,5 +73,10 @@ public class UserResources {
 		} else {
 			return service.findAll();
 		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/helloInternationalized")
+	public String helloInterationalized(@RequestHeader(name="Accept-Language", required = false)Locale locale) {
+		return messageSource.getMessage("good.morning.message", null, locale);
 	}
 }
